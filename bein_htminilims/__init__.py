@@ -29,6 +29,7 @@ from bein import *
 from datetime import *
 import cherrypy
 from cherrypy.lib.static import serve_file
+from mako.lookup import TemplateLookup
 import sys
 import getopt
 import os
@@ -198,22 +199,45 @@ def program_to_html(program):
                            program['return_code'], stdout, stderr)
 
 
+def boolean(val):
+    if isinstance(val, bool):
+        return val
+    elif val == "True" or val == "true" or val == "1":
+        return True
+    elif val == "False" or val == "false" or val == "0":
+        return False
+    else:
+        raise ValueError("Cannot coerce %s to a boolean" % str(val))
+    
+
 class HTMiniLIMS(object):
     def __init__(self, lims, read_only=False):
         self.lims = MiniLIMS(lims)
         self.read_only = read_only
+        self.lookup = TemplateLookup(directories=[os.path.join(data_dir, 'templates')],
+                                     filesystem_checks=True,
+                                     output_encoding='utf-8',
+                                     encoding_errors='replace')
     
     @cherrypy.expose
     def index(self):
         raise cherrypy.HTTPRedirect("executions", status=303)
 
     @cherrypy.expose
-    def executions(self):
-        return html_header + self.executions_tab(self.read_only) + html_footer
+    def executions(self, page=0, wrapped=True):
+        page = int(page)
+        wrapped = boolean(wrapped)
+        template = self.lookup.get_template('executions.mako')
+        return template.render_unicode(lims=self.lims, page=page, wrapped=wrapped)
+#        return html_header + self.executions_tab(self.read_only) + html_footer
 
     @cherrypy.expose
-    def files(self):
-        return html_header + self.files_tab(self.read_only) + html_footer
+    def files(self, page=0, wrapped=True):
+        page = int(page)
+        wrapped = boolean(wrapped)
+        template = self.lookup.get_template('files.mako')
+        return template.render_unicode(lims=self.lims, page=page, wrapped=wrapped)
+#        return html_header + self.files_tab(self.read_only) + html_footer
         
 
     # minilimscss, jquery, and jscript are ancillary files giving the

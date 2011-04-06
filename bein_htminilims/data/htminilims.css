@@ -136,8 +136,5 @@ html ul.tabs li.active, html ul.tabs li.active a:hover  { /*--Makes sure that th
 	clear: both;
 	float: left; width: 100%;
 	background: #fff;
-}
-.tab_content {
-	padding: 20px;
-	font-size: 1.2em;
+	margin-top: 36px;
 }
