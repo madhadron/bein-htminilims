@@ -45,7 +45,7 @@ usage = """beinclient [-p port] [-h] repository
 repository MiniLIMS repository to serve
 """
 
-def file_to_html(fileid, file):
+def file_to_html(fileid, file, read_only=False):
     """Format a file from the MiniLIMS as HTML.
 
     'fileid' is the id the File object was stored under in the
@@ -69,10 +69,13 @@ def file_to_html(fileid, file):
     else:
         description = file['description']
 
-    if file['immutable']:
-        delete_text = """<span class="delete_link">Immutable</span>"""
+    if not(read_only):
+        if file['immutable']:
+            delete_text = """<span class="delete_link">Immutable</span>"""
+        else:
+            delete_text = """<input class="delete_link" type="button" value="Delete" onclick="delete_entry('file',%d);" />""" % (fileid,)
     else:
-        delete_text = """<input class="delete_link" type="button" value="Delete" onclick="delete_entry('file',%d);" />""" % (fileid,)
+        delete_text = ""
 
     if file['aliases'] == []:
         alias_text = "<em>(no aliases)</em>"
@@ -111,7 +114,7 @@ def file_to_html(fileid, file):
                file['repository_name'], origin_text)
 
 
-def execution_to_html(exid, ex):
+def execution_to_html(exid, ex, read_only=False):
     """Render an execution into HTML.
 
     'exid' is the id under which the execution is stored in the
@@ -124,10 +127,13 @@ def execution_to_html(exid, ex):
     else:
         description = ex['description']
 
-    if ex['immutable']:
-        delete_text = """<span class="delete_link">Immutable</span>"""
+    if not(read_only):
+        if ex['immutable']:
+            delete_text = """<span class="delete_link">Immutable</span>"""
+        else:
+            delete_text = """<input class="delete_link" type="button" value="Delete" onclick="delete_entry('execution',%d);">""" % exid
     else:
-        delete_text = """<input class="delete_link" type="button" value="Delete" onclick="delete_entry('execution',%d);">""" % exid
+        delete_text = ""
 
     started_at_text = datetime.fromtimestamp(ex['started_at']).strftime("%Y-%m-%d %H:%M:%S")
     finished_at_text = datetime.fromtimestamp(ex['finished_at']).strftime("%Y-%m-%d %H:%M:%S")
