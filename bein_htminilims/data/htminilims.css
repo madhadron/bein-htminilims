@@ -19,6 +19,7 @@ span.label {
 
 .delete_link {
     float: right;
+    line-height: 1em;
 }
 
 .download_link {
@@ -141,4 +142,34 @@ html ul.tabs li.active, html ul.tabs li.active a:hover  { /*--Makes sure that th
 
 p.older_newer_links {
     text-align: center;
+}
+
+p.title {
+    background: #eee;
+}
+
+div.execution {
+    padding-left: 0.3em;
+    margin-bottom: 0.3em;
+}
+
+p.exception-string {
+    color: #f00;
+}
+
+span.small-link {
+    font-size: 50%;
+}
+
+ul.file-list {
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    list-style: none;
+    padding-left: 2em;
+}
+
+div.file {
+    margin-bottom: 0.3em;
 }

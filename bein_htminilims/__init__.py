@@ -242,13 +242,16 @@ class HTMiniLIMS(object):
         wrapped = boolean(wrapped)
 
         all_exids = self.lims.search_executions()
-        all_exids.sort()
+        all_exids.sort(reverse=True)
         (exids, older_newer) = extract_page(all_exids, page)
+
+        executions = [(i,self.lims.fetch_execution(i))
+                      for i in exids]
 
         template = self.lookup.get_template('executions.mako')
         return template.render_unicode(lims=self.lims, older_newer=older_newer,
-                                       wrapped=wrapped, execution_ids=exids,
-                                       page=page)
+                                       wrapped=wrapped, executions=executions,
+                                       page=page, read_only=self.read_only)
 
     @cherrypy.expose
     def files(self, page=0, wrapped=True):
@@ -256,13 +259,15 @@ class HTMiniLIMS(object):
         wrapped = boolean(wrapped)
 
         all_fileids = self.lims.search_files()
-        all_fileids.sort()
+        all_fileids.sort(reverse=True)
         (fileids, older_newer) = extract_page(all_fileids, page)
 
+        files = [(i,self.lims.fetch_file(i))
+                 for i in fileids]
         template = self.lookup.get_template('files.mako')
         return template.render_unicode(lims=self.lims, wrapped=wrapped,
-                                       older_newer=older_newer,
-                                       file_ids = fileids, page=page)
+                                       older_newer=older_newer, read_only=self.read_only,
+                                       files = files, page=page)
 #        return html_header + self.files_tab(self.read_only) + html_footer
         
 
@@ -309,19 +314,6 @@ class HTMiniLIMS(object):
                           content_type = "application/x-download", 
                           disposition = "attachment",
                           name = external_name)
-
-    def executions_tab(self, read_only=False):
-        exids = self.lims.search_executions()
-        exids.sort()
-        return """<div id="tabs-1" class="tab_content">%s</div>""" % \
-               "".join([execution_to_html(exid, self.lims.fetch_execution(exid), read_only)
-                        for exid in exids])
-    
-    def files_tab(self, read_only=False):
-        fileids = self.lims.search_files()
-        fileids.sort()
-        return """<div id="tabs-2" class="tab_content">%s</div>""" % \
-               "".join([file_to_html(id,self.lims.fetch_file(id), read_only) for id in fileids])
 
 class Usage(Exception):
     def __init__(self,  msg):
