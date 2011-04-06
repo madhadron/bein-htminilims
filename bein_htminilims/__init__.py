@@ -205,8 +205,16 @@ class HTMiniLIMS(object):
     
     @cherrypy.expose
     def index(self):
-        return html_header + self.executions_tab(self.read_only) + self.files_tab(self.read_only) \
-            + html_footer
+        raise cherrypy.HTTPRedirect("executions", status=303)
+
+    @cherrypy.expose
+    def executions(self):
+        return html_header + self.executions_tab(self.read_only) + html_footer
+
+    @cherrypy.expose
+    def files(self):
+        return html_header + self.files_tab(self.read_only) + html_footer
+        
 
     # minilimscss, jquery, and jscript are ancillary files giving the
     # CSS and JavaScript for the client.

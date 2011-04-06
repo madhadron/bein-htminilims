@@ -13,8 +13,8 @@ html_header = """
 
     <div id="tabs">
       <ul class="tabs">
-	<li id="t1"><a href="#tabs-1">Executions</a></li>
-	<li id="t2"><a href="#tabs-2">Files</a></li>
+	<li id="t1"><a href="executions">Executions</a></li>
+	<li id="t2"><a href="files">Files</a></li>
       </ul>
     </div>
     
