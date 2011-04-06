@@ -1,0 +1,45 @@
+* Access control
+** TODO Set up apache and a cherrypy or something running on another port in vmware
+** TODO Make apache proxy to other port
+** TODO Set up htaccess for apache on other port
+** TODO Set up forwarding to 80 and other port via VMWare so I can access it from outside
+** TODO Set up iptables rules on VMWare side to prevent access to other port, but still allow proxied access with password
+
+* New path scheme
+/ --> /executions
+/executions[?page=...]  (Shows 10 entries per page most recent first)
+/files[?page=...]       ("")
+/executions/12          (Retrieves HTML for execution 12 to insert in page)
+/executions/12/detail   (Retrieves HTML for details of 12 to insert in page)
+/executions/12/log      (Retrieves HTML of external program logs to insert in page)
+/files/12/detail (Same idea)
+
+* DONE Separate beinclient into a separate package, call it htminilims
+Depends on bein, cherrypy, mako
+* DONE Add data directory to htminilims, get it with htminilims.__file__ after import (which refers to __init__.py)
+* TODO Move static content out of python module and into data directory  
+* TODO Commmand line option for read-only (doesn't show delete or immutable)
+* TODO Refactor files and executions onto separate paths
+* TODO ?page= variable and 10 entries per page on executions and files paths
+* TODO Add Ajax paths for detail and log of executions, and detail of file
+* TODO Read Usage and Syntax chapters of Mako manual
+* TODO Move display of execution into a function, embed in a Mako template
+* TODO Move file display into a function, embed in Mako template
+* TODO Rewrite execution display as a template using new format (no ajax)
+* TODO Rewrite file display as a template using new format (no ajax)
+* TODO Add file details and execution details/log hide/show
+** TODO Add placeholder in file and execution templates
+** TODO Add buttons with JavaScript attached which does JQuery fetch and insert
+
+* New format
+** Executions
+1 (12 Feb 2011) This is a description
+  [Error message if any in red]
+  More... (link to insert rest of detail, which then has a link for output record show)
+      32 File description (downarrow) (downarrow is a download link, rest is link to file entry)
+      33 Another file description (downarrow)
+
+** Files
+1 File description
+  (Origin ...  | download)
+  More... <-- link to insert rest of detail

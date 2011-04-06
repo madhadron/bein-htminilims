@@ -33,7 +33,10 @@ import sys
 import getopt
 import os
 
-from webclient_constants import *
+# Get the path to the static content directory in the package
+import data
+data_dir = os.path.split(data.__file__)[0]
+from data import *
 
 usage = """beinclient [-p port] [-h] repository
 
@@ -189,29 +192,32 @@ def program_to_html(program):
                            program['return_code'], stdout, stderr)
 
 
-class BeinClient(object):
-    def __init__(self, lims):
+class HTMiniLIMS(object):
+    def __init__(self, lims, read_only=False):
         self.lims = MiniLIMS(lims)
+        self.read_only = read_only
     
     @cherrypy.expose
     def index(self):
-        return html_header + self.executions_tab() + self.files_tab() \
+        return html_header + self.executions_tab(self.read_only) + self.files_tab(self.read_only) \
             + html_footer
 
     # minilimscss, jquery, and jscript are ancillary files giving the
     # CSS and JavaScript for the client.
     @cherrypy.expose
-    def minilimscss(self):
-        cherrypy.response.headers['Content-Type']='text/css'
-        return css
+    def htminilims_css(self):
+        return serve_file(path=os.path.join(data_dir,'htminilims.css'),
+                          content_type='text/css')
 
     @cherrypy.expose
-    def jquery(self):
-        return jquery
+    def jquery_js(self):
+        return serve_file(path=os.path.join(data_dir,'jquery.js'),
+                          content_type='text/javascript')
 
     @cherrypy.expose
-    def jscript(self):
-        return jscript
+    def htminilims_js(self):
+        return serve_file(path=os.path.join(data_dir,'htminilims.js'),
+                          content_type='text/javascript')
 
     # delete is a method to be called by JQuery.  It doesn't return
     # anything in particular, but deletes a file.
@@ -240,18 +246,18 @@ class BeinClient(object):
                           disposition = "attachment",
                           name = external_name)
 
-    def executions_tab(self):
+    def executions_tab(self, read_only=False):
         exids = self.lims.search_executions()
         exids.sort()
         return """<div id="tabs-1" class="tab_content">%s</div>""" % \
-               "".join([execution_to_html(exid, self.lims.fetch_execution(exid))
+               "".join([execution_to_html(exid, self.lims.fetch_execution(exid), read_only)
                         for exid in exids])
     
-    def files_tab(self):
+    def files_tab(self, read_only=False):
         fileids = self.lims.search_files()
         fileids.sort()
         return """<div id="tabs-2" class="tab_content">%s</div>""" % \
-               "".join([file_to_html(id,self.lims.fetch_file(id)) for id in fileids])
+               "".join([file_to_html(id,self.lims.fetch_file(id), read_only) for id in fileids])
 
 class Usage(Exception):
     def __init__(self,  msg):
@@ -259,11 +265,12 @@ class Usage(Exception):
 
 def main(argv = None):
     port = 8080
+    read_only = False
     if argv is None:
         argv = sys.argv[1:]
     try:
         try:
-            opts, args = getopt.getopt(argv, "p:h", ["help"])
+            opts, args = getopt.getopt(argv, "p:hr", ["help","read-only"])
         except getopt.error, msg:
             raise Usage(msg)
         for o, a in opts:
@@ -271,6 +278,8 @@ def main(argv = None):
                 print __doc__
                 print usage
                 sys.exit(0)
+            if o in ("-r", "--read-only"):
+                read_only = True
             if o in ("-p",):
                 port = int(a)
         if len(args) != 1:
@@ -281,7 +290,7 @@ def main(argv = None):
                 not(os.path.isdir(lims + '.files')):
             raise Usage("No MiniLIMS repository found at " + lims)
         cherrypy.config.update({'server.socket_port':port})
-        cherrypy.quickstart(BeinClient(lims))
+        cherrypy.quickstart(HTMiniLIMS(lims, read_only=read_only))
         sys.exit(0)
     except Usage, err:
         print >>sys.stderr, err.msg
