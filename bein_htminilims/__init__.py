@@ -26,6 +26,7 @@ individual use.  However, it may serve as a model if you need to
 access the repository for more sophisticated interfaces.
 """
 from bein import *
+import math
 from datetime import *
 import cherrypy
 from cherrypy.lib.static import serve_file
@@ -209,7 +210,19 @@ def boolean(val):
     else:
         raise ValueError("Cannot coerce %s to a boolean" % str(val))
     
-
+def extract_page(ids, page, entries_per_page=10):
+    last_page = int(math.floor(len(ids)/float(entries_per_page)))
+    page = min(page, last_page)
+    page = max(page, 0)
+    
+    exids = ids[page*entries_per_page : (page+1)*entries_per_page]
+    
+    if last_page == 0:
+        older_newer = None
+    else:
+        older_newer = (page!=0, page!=last_page)
+    return (exids, older_newer)
+    
 class HTMiniLIMS(object):
     def __init__(self, lims, read_only=False):
         self.lims = MiniLIMS(lims)
@@ -227,16 +240,29 @@ class HTMiniLIMS(object):
     def executions(self, page=0, wrapped=True):
         page = int(page)
         wrapped = boolean(wrapped)
+
+        all_exids = self.lims.search_executions()
+        all_exids.sort()
+        (exids, older_newer) = extract_page(all_exids, page)
+
         template = self.lookup.get_template('executions.mako')
-        return template.render_unicode(lims=self.lims, page=page, wrapped=wrapped)
-#        return html_header + self.executions_tab(self.read_only) + html_footer
+        return template.render_unicode(lims=self.lims, older_newer=older_newer,
+                                       wrapped=wrapped, execution_ids=exids,
+                                       page=page)
 
     @cherrypy.expose
     def files(self, page=0, wrapped=True):
         page = int(page)
         wrapped = boolean(wrapped)
+
+        all_fileids = self.lims.search_files()
+        all_fileids.sort()
+        (fileids, older_newer) = extract_page(all_fileids, page)
+
         template = self.lookup.get_template('files.mako')
-        return template.render_unicode(lims=self.lims, page=page, wrapped=wrapped)
+        return template.render_unicode(lims=self.lims, wrapped=wrapped,
+                                       older_newer=older_newer,
+                                       file_ids = fileids, page=page)
 #        return html_header + self.files_tab(self.read_only) + html_footer
         
 

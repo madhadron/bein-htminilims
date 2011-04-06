@@ -1,11 +1,24 @@
 <%
    executions_class = ""
    files_class = ""
-   if self.attr.active_tab == "executions":
+   if self.attr.page_path == "executions":
        executions_class = "active"
-   elif self.attr.active_tab == "files":
+   elif self.attr.page_path == "files":
        files_class = "active" 
 %>
+
+<%def name="older_newer_links(older_newer)">
+    % if older_newer != None:
+        <p class="older_newer_links">
+            % if older_newer[0]:
+                <a href="${self.attr.page_path}?page=${page-1}">&lt;&lt; Newer</a>
+            % endif
+            % if older_newer[1]:
+                <a href="${self.attr.page_path}?page=${page+1}">Older &gt;&gt;</a>
+            % endif
+        </p>
+    % endif
+</%def>
 
 % if wrapped:
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
@@ -29,7 +42,9 @@
 % endif # Wrapped
 
     <div class="tab_container">
+      ${older_newer_links(older_newer)}
       ${self.body()}
+      ${older_newer_links(older_newer)}
     </div>
 
 % if wrapped:

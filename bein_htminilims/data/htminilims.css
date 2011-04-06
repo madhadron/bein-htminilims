@@ -138,3 +138,7 @@ html ul.tabs li.active, html ul.tabs li.active a:hover  { /*--Makes sure that th
 	background: #fff;
 	margin-top: 36px;
 }
+
+p.older_newer_links {
+    text-align: center;
+}

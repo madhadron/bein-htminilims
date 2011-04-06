@@ -1,10 +1,11 @@
 <%!
-   active_tab = "executions"
+   import math
+   page_path = "executions"
 %>
 <%inherit file="layout.mako" />
 
-<p>Boris!</p>
-<p>Boris2!</p>
-
+% for i in execution_ids:
+    <p>${i}</p>
+% endfor
 
 
