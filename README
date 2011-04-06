@@ -1,0 +1,31 @@
+htminilims 1.05
+Copyright 2011 Frederick Ross <madhadron at gmail dot com>
+
+htminilims is a standalone web frontend for browsing MiniLIMS
+repositories, as created by the Bein workflow manager.
+
+htminilims is released under the GNU General Public License 3.0.  A
+copy of this license is in the LICENSE file.
+
+Installation
+------------
+
+You will need to have Python >= 2.5 installed on your system.  htminilims also requires CherryPy >= 3.1, bein >= 1.05, and Mako.
+
+To install htminilims, in the htminilims directory, run
+
+$ python setup.py build
+$ sudo python setup.py install
+
+Known issues
+------------
+
+None
+
+Acknowledgements
+----------------
+
+The development of htminilims was supported by The Bioinformatics and
+Biostatistics Core Facility of the EPFL (http://bbcf.epfl.ch/) and
+SyBit (http://www.systemsx.ch/projects/systemsxch-projects/sybit/).
+
