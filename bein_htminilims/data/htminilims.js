@@ -1,58 +1,87 @@
-$(document).ready(function(){
-    $(".more-container").each(function(){
-	this_id = $(this).parent().attr('id');
-	$(this).html(more_link('show_file_details('+this_id+')'));
-    });
-})
 
-var more_link = function(call) {
-    return '<p><span class="small-link">\
-   <a href="javascript:'+call+'">\
-  more&rsaquo;&rsaquo;</a></span></p>';
+function more_link(call) {
+    return '<p><span class="small-link"><a href="javascript:' + call + '">details&rsaquo;&rsaquo;</a></span></p>';
 }
 
-var show_file_details = function(file_id) {
-    container = $("#"+file_id+" > div.more-container");
-    container.html("<p>...</p>")
-    $.ajax({
-	url: "file_detail?id="+file_id,
-	success: function(data) {
-	    container.html(data);
-	}
-    });
+function show_file_details(file_id) {
+    var container = $("#" + file_id + " > div.more-container");
+    container.html("<p>...</p>");
+    $.ajax({url: "file_detail?id="+file_id,
+	    success: function(data) {
+		container.html(data);
+	    }
+	   });
 }
 
-var hide_file_details = function(file_id) {
-    container = $("#"+file_id+" > div.more-container");
+function hide_file_details(file_id) {
+    var container = $("#"+file_id+" > div.more-container");
     container.html(more_link('show_file_details('+file_id+')'));
 }
 
-var show_execution_details = function(ex_id) {
-    container = $("#"+ex_id+" > div.details-container");
-    $("#"+ex_id+" > div.details-container").removeClass("hidden")
-    $("#"+ex_id+" > p > span.details-link").addClass("bold")
-	.html('<a href="javascript:hide_execution_details('+ex_id+')">&lsaquo;&lsaquo;details</a>');
+function show_execution_panel(ex_id,panel) {
+    var container = $("#"+ex_id+" > div."+panel+"-container");
+    select_link = function(p) {
+	$("#"+ex_id+" > div."+p+"-container").removeClass("hidden")
+	$("#"+ex_id+" > p > span."+p+"-link").addClass("bold")
+	    .html('<a href="javascript:hide_execution_panel('+ex_id+',\''+p+'\')">\
+                   &lsaquo;&lsaquo;'+panel+'</a>');
+    };
+    unselect_link = function(p) {
+	$("#"+ex_id+" > div." + p + "-container").addClass("hidden");
+	$("#"+ex_id+" > p > span." + p + "-link")
+            .removeClass("bold")
+	    .html('<a href="javascript:show_execution_panel('+ex_id+',\'' + p + '\')">'+p+'&rsaquo;&rsaquo;</a>');
+    };
+
+    update_link = function(p) {
+	if (p == panel) {
+	    select_link(p);
+	} else {
+	    unselect_link(p);
+	}
+    }
+
+    update_link("details");
+    update_link("traceback");
+    update_link("programs");
+
+    if (container.html() == "") {
+	container.html("<p>...</p>");
+	$.ajax({
+	    url: "execution_" + panel + "?id="+ex_id,
+	    success: function(data) {
+		container.html(data);
+	    }
+	});
+    };
+}
+
+function hide_execution_panel(ex_id,panel) {
+    var container = $("#"+ex_id+" > div." + panel + "-container");
+    $("#"+ex_id+" > div." + panel + "-container").addClass("hidden")
+    $("#"+ex_id+" > p > span." + panel + "-link").removeClass("bold")
+	.html('<a href="javascript:show_execution_panel('+ex_id+',\'' + panel + '\')">' + panel + '&rsaquo;&rsaquo;</a>');
+}
+
+function show_execution_traceback(ex_id) {
+    var container = $("#"+ex_id+" > div.traceback-container");
+    $("#"+ex_id+" > div.traceback-container").removeClass("hidden");
+    $("#"+ex_id+" > p > span.traceback-link").addClass("bold")
+	.html('<a href="javascript:hide_execution_traceback('+ex_id+')">&lsaquo;&lsaquo;traceback</a>');
     $("#"+ex_id+" > div.programs-container").addClass("hidden");
     $("#"+ex_id+" > p > span.programs-link").removeClass("bold");
-    $("#"+ex_id+" > div.traceback-container").addClass("hidden");
-    $("#"+ex_id+" > p > span.traceback-link").removeClass("bold");
+    $("#"+ex_id+" > div.details-container").addClass("hidden");
+    $("#"+ex_id+" > p > span.details-link").removeClass("bold");
     container.html("<p>...</p>");
     $.ajax({
-	url: "execution_detail?id="+ex_id,
+	url: "execution_traceback?id="+ex_id,
 	success: function(data) {
 	    container.html(data);
 	}
     });
 }
 
-var hide_execution_details = function(ex_id) {
-    container = $("#"+ex_id+" > div.details-container");
-    $("#"+ex_id+" > div.details-container").addClass("hidden")
-    $("#"+ex_id+" > p > span.details-link").removeClass("bold")
-	.html('<a href="javascript:show_execution_details('+ex_id+')">details&rsaquo;&rsaquo;</a>');
-}
-
-var delete_entry = function(t,i) {
+function delete_entry(t,i) {
     var a = confirm('Really delete ' + t + ' ' + i + '?');
     if (a) { 
       $.get('delete', {obj_type: t, obj_id: i}, 
@@ -64,3 +93,10 @@ var delete_entry = function(t,i) {
       return false;
     }
 }
+
+$(document).ready(function(){
+    $(".more-container").each(function(){
+	this_id = $(this).parent().attr('id');
+	$(this).html(more_link('show_file_details('+this_id+')'));
+    });
+});

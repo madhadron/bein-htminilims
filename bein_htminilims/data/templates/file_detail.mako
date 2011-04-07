@@ -1,6 +1,6 @@
 <%def name="hide_link()">
 <p><span class="small-link">
-       <a href="javascript:hide_file_details(${id})">&lsaquo;&lsaquo;less</a></span></p>
+       <a href="javascript:hide_file_details(${id})">&lsaquo;&lsaquo;details</a></span></p>
 </%def>
 
 ${hide_link()}
@@ -41,5 +41,3 @@ ${hide_link()}
 <p><span class="label">Repository name</span>
 <span class="repository_name">${file_details['repository_name']}</span></p>
 
-${hide_link()}
-        

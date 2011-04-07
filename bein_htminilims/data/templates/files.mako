@@ -5,7 +5,7 @@
 
 <%def name="display_file(i,v)">
 <div class="file" id="${i}">
-<a name="${i}"></a>
+<a name="file-${i}"></a>
 <p class="title">${i} - 
 % if v['description'] != "":
     ${v['description']}

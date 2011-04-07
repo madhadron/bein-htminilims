@@ -210,7 +210,7 @@ def boolean(val):
     else:
         raise ValueError("Cannot coerce %s to a boolean" % str(val))
     
-def extract_page(ids, page, entries_per_page=10, include=None):
+def extract_page(ids, page, entries_per_page=8, include=None):
     last_page = int(math.floor(len(ids)/float(entries_per_page)))
     if include == None:
         page = min(page, last_page)
@@ -260,13 +260,31 @@ class HTMiniLIMS(object):
                                        page=page, read_only=self.read_only)
 
     @cherrypy.expose
-    def execution_detail(self, id=None):
+    def execution_details(self, id=None):
         if id == None:
             raise cherrypy.NotFound()
         else:
             ex = self.lims.fetch_execution(int(id))
             template = self.lookup.get_template('execution_detail.mako')
             return template.render_unicode(id=int(id), ex_details=ex)
+
+    @cherrypy.expose
+    def execution_traceback(self, id=None):
+        if id == None:
+            raise cherrypy.NotFound()
+        else:
+            ex = self.lims.fetch_execution(int(id))
+            template = self.lookup.get_template('execution_traceback.mako')
+            return template.render_unicode(id=int(id), ex_details=ex)
+
+    @cherrypy.expose
+    def execution_programs(self, id=None):
+        if id == None:
+            raise cherrypy.NotFound()
+        else:
+            ex = self.lims.fetch_execution(int(id))
+            template = self.lookup.get_template('execution_programs.mako')
+            return template.render_unicode(id=int(id), programs=ex['programs'])
 
 
     @cherrypy.expose
