@@ -28,24 +28,21 @@
         <p class="exception-string">FAILED: ${v['exception_string'].splitlines()[-1]}</p>
     % endif
     <p>
-        <span class="small-link details-link"><a href="javascript:show_execution_details(${i})">details&rsaquo;&rsaquo;</a></span>&nbsp;&nbsp;&nbsp;
+        <span class="small-link details-link"><a href="javascript:show_execution_panel(${i},'details')">details&rsaquo;&rsaquo;</a></span>&nbsp;&nbsp;&nbsp;
 	% if v['programs'] != []:
-            <span class="small-link programs-link"><a href="javascript:show_execution_programs(${i})">programs&rsaquo;&rsaquo;</a></span>&nbsp;&nbsp;&nbsp;
+            <span class="small-link programs-link"><a href="javascript:show_execution_panel(${i},'programs')">programs&rsaquo;&rsaquo;</a></span>&nbsp;&nbsp;&nbsp;
         % else:
             <span class="small-link grey">programs&rsaquo;&rsaquo;</span>&nbsp;&nbsp;&nbsp;
         % endif
         % if v['exception_string'] != None:
-	    <span class="small-link traceback-link"><a href="javascript:show_traceback(${i})">traceback&rsaquo;&rsaquo;</a></span>&nbsp;&nbsp;&nbsp;
+	    <span class="small-link traceback-link"><a href="javascript:show_execution_panel(${i},'traceback')">traceback&rsaquo;&rsaquo;</a></span>&nbsp;&nbsp;&nbsp;
         % else:
    	    <span class="small-link grey">traceback&rsaquo;&rsaquo;</span>&nbsp;&nbsp;&nbsp;
         % endif
     </p>
-    <div class="details-container">
-    </div>
-    <div class="programs-container">
-    </div>
-    <div class="traceback-container">
-    </div>
+    <div class="details-container"></div>
+    <div class="programs-container"></div>
+    <div class="traceback-container"></div>
 
     <ul class="file-list">
         % for fid in v['added_files']:
