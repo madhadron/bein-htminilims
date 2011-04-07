@@ -4,8 +4,8 @@
 <%inherit file="layout.mako" />
 
 <%def name="display_file(i,v)">
-<div class="file" id="file-${i}">
-<a name="file-${i}"></a>
+<div class="file" id="${i}">
+<a name="${i}"></a>
 <p class="title">${i} - 
 % if v['description'] != "":
     ${v['description']}
@@ -31,6 +31,9 @@
     ${v['origin'][1]}</a> at ${v['created']}.
 % endif
 </p>
+<div id="file-${i}-more-container" class="more-container">
+
+</div>
 </div>
 </%def>
 

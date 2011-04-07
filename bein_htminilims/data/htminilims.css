@@ -173,3 +173,16 @@ ul.file-list {
 div.file {
     margin-bottom: 0.3em;
 }
+
+.bold {
+    font-weight: bold;
+}
+
+.grey {
+    color: #999;
+}
+
+.hidden {
+    display: none;
+}
+

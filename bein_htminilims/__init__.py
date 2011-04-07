@@ -260,6 +260,25 @@ class HTMiniLIMS(object):
                                        page=page, read_only=self.read_only)
 
     @cherrypy.expose
+    def execution_detail(self, id=None):
+        if id == None:
+            raise cherrypy.NotFound()
+        else:
+            ex = self.lims.fetch_execution(int(id))
+            template = self.lookup.get_template('execution_detail.mako')
+            return template.render_unicode(id=int(id), ex_details=ex)
+
+
+    @cherrypy.expose
+    def file_detail(self, id=None):
+        if id == None:
+            raise cherrypy.NotFound()
+        else:
+            f = self.lims.fetch_file(int(id))
+            template = self.lookup.get_template('file_detail.mako')
+            return template.render_unicode(id=int(id), file_details=f)
+
+    @cherrypy.expose
     def files(self, page=0, wrapped=True, include_file=None):
         page = int(page)
         if include_file != None:
