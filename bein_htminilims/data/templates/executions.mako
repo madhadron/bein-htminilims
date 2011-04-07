@@ -31,7 +31,7 @@
     <p><span class="small-link">more&rsaquo;&rsaquo;</span></p>
     <ul class="file-list">
         % for fid in v['added_files']:
-            <li><a href="files#file-${i}">${i} ${lims.fetch_file(i)['description']}</a> 
+            <li><a href="files?include_file=${i}#file-${i}">${i} ${lims.fetch_file(i)['description']}</a> 
                  &nbsp;&nbsp;&nbsp; <span class="small-link">
                      [<a href="download?fileid=${i}">download</a>]</span></li>
         % endfor

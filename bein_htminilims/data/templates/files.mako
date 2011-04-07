@@ -27,7 +27,7 @@
     Created by <a href="executions?include_execution=${v['origin'][1]}#execution-${v['origin'][1]}">
     execution ${v['origin'][1]}</a> at ${v['created']}.
 % elif v['origin'][0] == 'copy':
-    Copy of <a href="files?include_execution=${v['origin'][1]}#file-${v['origin'][1]}">file 
+    Copy of <a href="files?include_file=${v['origin'][1]}#file-${v['origin'][1]}">file 
     ${v['origin'][1]}</a> at ${v['created']}.
 % endif
 </p>

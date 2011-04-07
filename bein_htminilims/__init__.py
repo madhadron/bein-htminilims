@@ -210,10 +210,14 @@ def boolean(val):
     else:
         raise ValueError("Cannot coerce %s to a boolean" % str(val))
     
-def extract_page(ids, page, entries_per_page=10):
+def extract_page(ids, page, entries_per_page=10, include=None):
     last_page = int(math.floor(len(ids)/float(entries_per_page)))
-    page = min(page, last_page)
-    page = max(page, 0)
+    if include == None:
+        page = min(page, last_page)
+        page = max(page, 0)
+    else:
+        offset = ids.index(include)
+        page = offset // entries_per_page
     
     exids = ids[page*entries_per_page : (page+1)*entries_per_page]
     
@@ -237,13 +241,15 @@ class HTMiniLIMS(object):
         raise cherrypy.HTTPRedirect("executions", status=303)
 
     @cherrypy.expose
-    def executions(self, page=0, wrapped=True):
+    def executions(self, page=0, wrapped=True, include_execution=None):
         page = int(page)
         wrapped = boolean(wrapped)
+        if include_execution != None:
+            include_execution = int(include_execution)
 
         all_exids = self.lims.search_executions()
         all_exids.sort(reverse=True)
-        (exids, older_newer) = extract_page(all_exids, page)
+        (exids, older_newer) = extract_page(all_exids, page, include=include_execution)
 
         executions = [(i,self.lims.fetch_execution(i))
                       for i in exids]
@@ -254,13 +260,16 @@ class HTMiniLIMS(object):
                                        page=page, read_only=self.read_only)
 
     @cherrypy.expose
-    def files(self, page=0, wrapped=True):
+    def files(self, page=0, wrapped=True, include_file=None):
         page = int(page)
+        if include_file != None:
+            include_file = int(include_file)
         wrapped = boolean(wrapped)
 
         all_fileids = self.lims.search_files()
         all_fileids.sort(reverse=True)
-        (fileids, older_newer) = extract_page(all_fileids, page)
+
+        (fileids, older_newer) = extract_page(all_fileids, page, include=include_file)
 
         files = [(i,self.lims.fetch_file(i))
                  for i in fileids]
