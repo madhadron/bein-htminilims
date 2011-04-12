@@ -253,7 +253,7 @@ class HTMiniLIMS(object):
         executions = [(i,self.lims.fetch_execution(i))
                       for i in exids]
 
-        template = self.lookup.get_template('executions.mako')
+        template = self.lookup.get_template('executions.py')
         return template.render_unicode(lims=self.lims, older_newer=older_newer,
                                        wrapped=wrapped, executions=executions,
                                        page=page, read_only=self.read_only)
@@ -264,7 +264,7 @@ class HTMiniLIMS(object):
             raise cherrypy.NotFound()
         else:
             ex = self.lims.fetch_execution(int(id))
-            template = self.lookup.get_template('execution_detail.mako')
+            template = self.lookup.get_template('execution_detail.py')
             return template.render_unicode(id=int(id), ex_details=ex)
 
     @cherrypy.expose
@@ -273,7 +273,7 @@ class HTMiniLIMS(object):
             raise cherrypy.NotFound()
         else:
             ex = self.lims.fetch_execution(int(id))
-            template = self.lookup.get_template('execution_traceback.mako')
+            template = self.lookup.get_template('execution_traceback.py')
             return template.render_unicode(id=int(id), ex_details=ex)
 
     @cherrypy.expose
@@ -282,7 +282,7 @@ class HTMiniLIMS(object):
             raise cherrypy.NotFound()
         else:
             ex = self.lims.fetch_execution(int(id))
-            template = self.lookup.get_template('execution_programs.mako')
+            template = self.lookup.get_template('execution_programs.py')
             return template.render_unicode(id=int(id), programs=ex['programs'])
 
 
@@ -292,7 +292,7 @@ class HTMiniLIMS(object):
             raise cherrypy.NotFound()
         else:
             f = self.lims.fetch_file(int(id))
-            template = self.lookup.get_template('file_detail.mako')
+            template = self.lookup.get_template('file_detail.py')
             return template.render_unicode(id=int(id), file_details=f)
 
     @cherrypy.expose
@@ -309,7 +309,7 @@ class HTMiniLIMS(object):
 
         files = [(i,self.lims.fetch_file(i))
                  for i in fileids]
-        template = self.lookup.get_template('files.mako')
+        template = self.lookup.get_template('files.py')
         return template.render_unicode(lims=self.lims, wrapped=wrapped,
                                        older_newer=older_newer, read_only=self.read_only,
                                        files = files, page=page)
@@ -320,17 +320,17 @@ class HTMiniLIMS(object):
     # CSS and JavaScript for the client.
     @cherrypy.expose
     def htminilims_css(self):
-        return serve_file(path=os.path.join(data_dir,'htminilims.css'),
+        return serve_file(path=os.path.join(data_dir,'stylesheet.py'),
                           content_type='text/css')
 
     @cherrypy.expose
     def jquery_js(self):
-        return serve_file(path=os.path.join(data_dir,'jquery.js'),
+        return serve_file(path=os.path.join(data_dir,'jquery.py'),
                           content_type='text/javascript')
 
     @cherrypy.expose
     def htminilims_js(self):
-        return serve_file(path=os.path.join(data_dir,'htminilims.js'),
+        return serve_file(path=os.path.join(data_dir,'javascript.py'),
                           content_type='text/javascript')
 
     # delete is a method to be called by JQuery.  It doesn't return
