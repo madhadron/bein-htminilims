@@ -36,9 +36,8 @@ import getopt
 import os
 
 # Get the path to the static content directory in the package
-import data
+import bein_htminilims.data as data
 data_dir = os.path.split(data.__file__)[0]
-from data import *
 
 usage = """beinclient [-p port] [-h] repository
 
