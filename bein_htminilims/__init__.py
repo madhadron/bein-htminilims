@@ -230,6 +230,7 @@ class HTMiniLIMS(object):
     def __init__(self, lims, read_only=False):
         self.lims = MiniLIMS(lims)
         self.read_only = read_only
+        print "Template dir = ", os.path.join(data_dir, 'templates')
         self.lookup = TemplateLookup(directories=[os.path.join(data_dir, 'templates')],
                                      filesystem_checks=True,
                                      output_encoding='utf-8',

@@ -1,7 +1,7 @@
 <%!
     page_path = "files"
 %>
-<%inherit file="layout.mako" />
+<%inherit file="layout.py" />
 
 <%def name="display_file(i,v)">
 <div class="file" id="${i}">

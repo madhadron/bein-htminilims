@@ -3,7 +3,7 @@
    from datetime import datetime
    page_path = "executions"
 %>
-<%inherit file="layout.mako" />
+<%inherit file="layout.py" />
 
 <%def name="display_execution(i,v)">
 <div class="execution" id="${i}">
@@ -46,7 +46,7 @@
 
     <ul class="file-list">
         % for fid in v['added_files']:
-            <li><a href="files?include_file=${i}#file-${i}">${i} ${lims.fetch_file(i)['description']}</a> 
+            <li><a href="files?include_file=${i}#file-${i}">${i} ${lims.fetch_file(fid)['description'] == '' and '<em>(no description)</em>' or lims.fetch_file(fid)['description']}</a> 
                  &nbsp;&nbsp;&nbsp; <span class="small-link">
                      [<a href="download?fileid=${i}">download</a>]</span></li>
         % endfor
