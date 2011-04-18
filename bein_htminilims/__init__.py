@@ -238,7 +238,7 @@ class HTMiniLIMS(object):
     
     @cherrypy.expose
     def index(self):
-        raise cherrypy.HTTPRedirect("executions", status=303)
+        raise cherrypy.InternalRedirect("/executions")
 
     @cherrypy.expose
     def executions(self, page=0, wrapped=True, include_execution=None):
