@@ -83,12 +83,17 @@ function show_execution_traceback(ex_id) {
 
 function delete_entry(t,i) {
     var a = confirm('Really delete ' + t + ' ' + i + '?');
-    if (a) { 
-      $.get('delete', {obj_type: t, obj_id: i}, 
-            function(data) { $('#' + t + '-' + i).remove(); });
-      if (t == 'execution') {
-          $('div.created-by-ex'+i).each(function(i) { $(this).remove(); });
-      }
+    if (a) {
+	$.ajax({
+	    url: "delete",
+	    data: {obj_type: t, obj_id: i},
+	    success: function(data) {
+		$('.'+t+'#'+i).remove();
+	    },
+	    error: function(x, type, exception) {
+		alert('Deletion of ' + t + ' ' + i + ' failed: ' + exception);
+	    }
+	});
     } else {
       return false;
     }

@@ -341,13 +341,21 @@ class HTMiniLIMS(object):
         try:
             obj_id = int(obj_id)
         except ValueError, v:
-            return "Bad value!"
+            raise cherrypy.HTTPError("400 Bad Request", "Object ID must be an integer")
         if obj_type == "execution":
-            self.lims.delete_execution(obj_id)
-            return ""
+            try:
+                self.lims.fetch_execution(obj_id)
+                self.lims.delete_execution(obj_id)
+                return "Deleted execution %d" % obj_id
+            except Exception, v:
+                raise cherrypy.HTTPError("500 Internal Server Error", str(v))
         if obj_type == "file":
-            self.lims.delete_file(obj_id)
-            return ""
+            try:
+                self.lims.fetch_file(obj_id)
+                self.lims.delete_file(obj_id)
+                return "Deleted file %d" % obj_id
+            except Exception, v:
+                raise cherrypy.HTTPError("500 Internal Server Error", str(v))
         else:
             return "Unknown object type."
 
